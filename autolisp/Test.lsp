@@ -1,0 +1,7 @@
+(defun c:example()
+  (setq pt1 (getpoint "Pick first point:  ")
+        pt2 (getpoint "Pick next point:  " pt1)
+        pt3 (getpoint "Pick next point:  " pt2)
+  )
+  (command "._pline" pt1 pt2 pt3 "c" "._circle" pt1 "d" 1.5 "._circle" pt2 "d" 1.5 "._circle" pt3 "d" 1.5)
+)

@@ -1,0 +1,38 @@
+(defun c:crec ( / a b f l p q x z )
+   (if (setq p (getpoint "\nSpecify center of rectangle: "))
+       (progn
+           (setq z (trans '(0 0 1) 1 0 t)
+                 f
+               (lambda ( a v )
+                   (list
+                       (mapcar '+ a v)
+                       (mapcar '+ a (list (- (car v)) (cadr v)))
+                       (mapcar '- a v)
+                       (mapcar '+ a (list (car v) (- (cadr v))))
+                   )
+               )
+           )
+           (while (= 5 (car (setq q (grread t 13 0))))
+               (redraw)
+               (setq l (f p (mapcar '- (cadr q) p)))
+               (mapcar '(lambda ( a b ) (grdraw a b -1)) (cons (last l) l) l)
+           )
+           (if (= 3 (car q))
+               (entmake
+                   (append
+                      '(
+                           (000 . "LWPOLYLINE")
+                           (100 . "AcDbEntity")
+                           (100 . "AcDbPolyline")
+                           (090 . 4)
+                           (070 . 1)
+                       )
+                       (mapcar '(lambda ( x ) (cons 10 (trans x 1 z))) (f p (mapcar '- (cadr q) p)))
+                       (list (cons 210 z))
+                   )
+               )
+           )
+       )
+   )
+   (redraw) (princ)
+)
